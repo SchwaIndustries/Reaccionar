@@ -9,4 +9,4 @@ edition = "2018"
 [dependencies]
 serenity = "0.8.6"
 dotenv = "0.15.0"
-mongodb = "0.11.0"
+redis = "*"

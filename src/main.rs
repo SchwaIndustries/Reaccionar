@@ -1,5 +1,10 @@
 use serenity::client::Client;
-use serenity::model::{channel::Message, channel::Reaction, gateway::Ready, id::{ChannelId, MessageId}};
+#[allow(unused_imports)]
+use serenity::model::{
+    channel::{Message, Reaction, ReactionType},
+    gateway::{Ready, Activity},
+    id::{MessageId, GuildId, RoleId}
+};
 use serenity::prelude::{EventHandler, Context};
 use serenity::framework::standard::{
     StandardFramework,
@@ -10,23 +15,32 @@ use serenity::framework::standard::{
     }
 };
 extern crate dotenv;
+use std::time::Duration;
+use std::thread;
 
 #[group]
-#[commands(ping, track_message)]
+#[commands(ping, track_message, untrack_message)]
 struct General;
 
 use dotenv::dotenv;
 use std::env;
+// use botdb;
 
 struct Handler;
 
 impl EventHandler for Handler {
-    fn ready(&self, _: Context, ready: Ready) {
-        println!("{} is connected!", ready.user.name);
+    fn ready(&self, ctx: Context, ready: Ready) {
+        println!("{}#{} is connected!", ready.user.name, ready.user.discriminator);
+        diss_status(ctx);
     }
 
-    fn reaction_add(&self, _ctx: Context, reaction: Reaction) {
-        println!("Reaction {} was added to message {} by user {}", reaction.emoji, reaction.message_id, reaction.user_id)
+    fn reaction_add(&self, ctx: Context, reaction: Reaction) {
+        if let Some(guild) = reaction.guild_id {
+            if reaction.emoji != ReactionType::Unicode("✅".to_string()) { return; }
+            let mut member = guild.member(&ctx, &reaction.user_id).expect("Member not found");
+            member.add_role(&ctx, 386003239994392602).expect("Role addition failed");
+        }
+        println!("Reaction {} was added to message {} by user {}", reaction.emoji, reaction.message_id, reaction.user_id);
     }
 }
 
@@ -57,13 +71,74 @@ fn track_message(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandRes
     let message_id = match args.single::<u64>() {
         Ok(id) => MessageId(id),
         Err(_) => {
-            msg.reply(&ctx, "Requires a valid message ID be given").expect("Message failed");
+            msg.reply(&ctx, "Requires a valid message ID to be given").expect("Message failed");
 
             return Ok(());
         },
     };
 
-    msg.reply(ctx, &format!("Reaction listener added for message {}", message_id))?;
+    let emoji = match args.single::<String>() {
+        Ok(id) => id.to_string(),
+        Err(_) => {
+            msg.reply(&ctx, "Requires a valid emoji to be given").expect("Message failed");
+
+            return Ok(());
+        },
+    };
+
+    let role_id = match args.single::<u64>() {
+        Ok(id) => RoleId(id),
+        Err(_) => {
+            msg.reply(&ctx, "Requires a valid role ID to be given").expect("Message failed");
+
+            return Ok(());
+        },
+    };
+
+    msg.reply(ctx, &format!("Reaction listener added for message {}, watching for emoji {}, and giving role {}", message_id, emoji, role_id))?;
 
     Ok(())
+}
+
+#[command]
+fn untrack_message(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
+    let message_id = match args.single::<u64>() {
+        Ok(id) => MessageId(id),
+        Err(_) => {
+            msg.reply(&ctx, "Requires a valid message ID to be given").expect("Message failed");
+
+            return Ok(());
+        },
+    };
+
+    let emoji = match args.single::<String>() {
+        Ok(id) => id.to_string(),
+        Err(_) => {
+            msg.reply(&ctx, "Requires a valid emoji to be given").expect("Message failed");
+
+            return Ok(());
+        },
+    };
+
+    let role_id = match args.single::<u64>() {
+        Ok(id) => RoleId(id),
+        Err(_) => {
+            msg.reply(&ctx, "Requires a valid role ID to be given").expect("Message failed");
+
+            return Ok(());
+        },
+    };
+
+    msg.reply(ctx, &format!("Reaction listener removed for message {}, no longer watching for emoji {}, and giving role {}", message_id, emoji, role_id))?;
+
+    Ok(())
+}
+
+fn diss_status(ctx: Context) {
+    loop {
+        &ctx.set_activity(Activity::playing("todo el tiempo!"));
+        thread::sleep(Duration::from_secs(15));
+        &ctx.set_activity(Activity::playing("unlike Reaction Roles!"));
+        thread::sleep(Duration::from_secs(15));
+    }
 }
