@@ -1,9 +1,9 @@
 use serenity::client::Client;
-use serenity::model::{channel::Message, channel::Reaction, gateway::Ready};
+use serenity::model::{channel::Message, channel::Reaction, gateway::Ready, id::{ChannelId, MessageId}};
 use serenity::prelude::{EventHandler, Context};
 use serenity::framework::standard::{
     StandardFramework,
-    CommandResult,
+    Args, CommandResult,
     macros::{
         command,
         group
@@ -12,7 +12,7 @@ use serenity::framework::standard::{
 extern crate dotenv;
 
 #[group]
-#[commands(ping)]
+#[commands(ping, track_message)]
 struct General;
 
 use dotenv::dotenv;
@@ -48,6 +48,22 @@ fn main() {
 #[command]
 fn ping(ctx: &mut Context, msg: &Message) -> CommandResult {
     msg.reply(ctx, "Pong!")?;
+
+    Ok(())
+}
+
+#[command]
+fn track_message(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
+    let message_id = match args.single::<u64>() {
+        Ok(id) => MessageId(id),
+        Err(_) => {
+            msg.reply(&ctx, "Requires a valid message ID be given").expect("Message failed");
+
+            return Ok(());
+        },
+    };
+
+    msg.reply(ctx, &format!("Reaction listener added for message {}", message_id))?;
 
     Ok(())
 }
