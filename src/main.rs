@@ -1,3 +1,4 @@
+#![feature(proc_macro_hygiene, decl_macro)]
 use serenity::client::Client;
 #[allow(unused_imports)]
 use serenity::model::{
@@ -17,6 +18,8 @@ use serenity::framework::standard::{
 extern crate dotenv;
 use std::time::Duration;
 use std::thread;
+
+#[macro_use] extern crate rocket;
 
 #[group]
 #[commands(ping, track_message, untrack_message)]
@@ -46,6 +49,11 @@ impl EventHandler for Handler {
     }
 }
 
+#[get("/")]
+fn index() -> &'static str {
+    "What's up? This is reaccionar. Yet another reaction roles bot, powered by the finest Rust code."
+}
+
 fn main() {
     // Login with a bot token from the environment
     dotenv().ok();
@@ -59,6 +67,8 @@ fn main() {
     if let Err(why) = client.start() {
         println!("An error occurred while running the client: {:?}", why);
     }
+
+    rocket::ignite().mount("/", routes![index]).launch();
 }
 
 #[command]
@@ -139,8 +149,10 @@ fn untrack_message(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandR
 fn diss_status(ctx: Context) {
     loop {
         &ctx.set_activity(Activity::playing("todo el tiempo!"));
-        thread::sleep(Duration::from_secs(15));
+        thread::sleep(Duration::from_secs(5));
         &ctx.set_activity(Activity::playing("unlike Reaction Roles!"));
-        thread::sleep(Duration::from_secs(15));
+        thread::sleep(Duration::from_secs(5));
+
+        reqwest::blocking::get("https://echel0n.herokuapp.com").expect("Keep alive failed!");
     }
 }

@@ -1,1 +1,1 @@
-web: ./target/release/reaccionar
+web: ROCKET_PORT=$PORT target/release/reaccionar
