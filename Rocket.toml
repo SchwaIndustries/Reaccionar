@@ -8,4 +8,4 @@ port = 1337
 [staging]
 
 [production]
-address = "echel0n.herokuapp.com"
+address = "0.0.0.0"
