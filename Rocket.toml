@@ -2,9 +2,10 @@
 limits = { json = 32768 }
 
 [development]
-base_url = "http://127.0.0.1:8000"
+address = "localhost"
+port = 1337
 
 [staging]
 
 [production]
-base_url = "https://echel0n.herokuapp.com"
+address = "echel0n.herokuapp.com"

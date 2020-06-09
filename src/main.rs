@@ -34,7 +34,10 @@ struct Handler;
 impl EventHandler for Handler {
     fn ready(&self, ctx: Context, ready: Ready) {
         println!("{}#{} is connected!", ready.user.name, ready.user.discriminator);
-        diss_status(ctx);
+        thread::spawn(|| {
+            diss_status(ctx);
+        });
+        rocket::ignite().mount("/", routes![index]).launch();
     }
 
     fn reaction_add(&self, ctx: Context, reaction: Reaction) {
@@ -67,8 +70,6 @@ fn main() {
     if let Err(why) = client.start() {
         println!("An error occurred while running the client: {:?}", why);
     }
-
-    rocket::ignite().mount("/", routes![index]).launch();
 }
 
 #[command]
@@ -149,10 +150,10 @@ fn untrack_message(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandR
 fn diss_status(ctx: Context) {
     loop {
         &ctx.set_activity(Activity::playing("todo el tiempo!"));
-        thread::sleep(Duration::from_secs(5));
+        thread::sleep(Duration::from_secs(30));
         &ctx.set_activity(Activity::playing("unlike Reaction Roles!"));
-        thread::sleep(Duration::from_secs(5));
+        thread::sleep(Duration::from_secs(30));
 
-        reqwest::blocking::get("https://echel0n.herokuapp.com").expect("Keep alive failed!");
+        reqwest::blocking::get("https://echel0n.herokuapp.com").expect("keep alive failed");
     }
 }
