@@ -46,15 +46,15 @@ impl EventHandler for Handler {
                 if reaction.emoji != ReactionType::Unicode("✅".to_string()) { return; }
                 let mut member = guild.member(&ctx, &reaction.user_id).expect("Member not found");
                 member.add_role(&ctx, 687460972960415771).expect("Role addition failed");
+                println!("Reaction {} was added to message {} by user {}", reaction.emoji, reaction.message_id, reaction.user_id);
             }
             if guild == 704495983542796338 && reaction.message_id == 709842698575675416 { 
                 if reaction.emoji != ReactionType::Unicode("👍".to_string()) { return; }
                 let mut member = guild.member(&ctx, &reaction.user_id).expect("Member not found");
                 member.add_role(&ctx, 704500053519368383).expect("Role addition failed");
+                println!("Reaction {} was added to message {} by user {}", reaction.emoji, reaction.message_id, reaction.user_id);
             }
-            
         }
-        println!("Reaction {} was added to message {} by user {}", reaction.emoji, reaction.message_id, reaction.user_id);
     }
 }
 
@@ -160,6 +160,6 @@ fn diss_status(ctx: Context) {
         &ctx.set_activity(Activity::playing("unlike Reaction Roles!"));
         thread::sleep(Duration::from_secs(30));
 
-        reqwest::blocking::get("https://echel0n.herokuapp.com").expect("keep alive failed");
+        reqwest::blocking::get("https://reaccionar.herokuapp.com").expect("keep alive failed");
     }
 }
