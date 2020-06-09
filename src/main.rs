@@ -36,7 +36,7 @@ impl EventHandler for Handler {
 
     fn reaction_add(&self, ctx: Context, reaction: Reaction) {
         if let Some(guild) = reaction.guild_id {
-            if reaction.guild_id != 667553378607431681 { return; }
+            if guild != 667553378607431681 { return; }
             if reaction.message_id != 712566183257440266 { return; }
             if reaction.emoji != ReactionType::Unicode("✅".to_string()) { return; }
             let mut member = guild.member(&ctx, &reaction.user_id).expect("Member not found");
