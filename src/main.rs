@@ -42,11 +42,17 @@ impl EventHandler for Handler {
 
     fn reaction_add(&self, ctx: Context, reaction: Reaction) {
         if let Some(guild) = reaction.guild_id {
-            if guild != 667553378607431681 { return; }
-            if reaction.message_id != 712566183257440266 { return; }
-            if reaction.emoji != ReactionType::Unicode("✅".to_string()) { return; }
-            let mut member = guild.member(&ctx, &reaction.user_id).expect("Member not found");
-            member.add_role(&ctx, 687460972960415771).expect("Role addition failed");
+            if guild == 667553378607431681 && reaction.message_id == 712566183257440266 { 
+                if reaction.emoji != ReactionType::Unicode("✅".to_string()) { return; }
+                let mut member = guild.member(&ctx, &reaction.user_id).expect("Member not found");
+                member.add_role(&ctx, 687460972960415771).expect("Role addition failed");
+            }
+            if guild == 704495983542796338 && reaction.message_id == 709842698575675416 { 
+                if reaction.emoji != ReactionType::Unicode("👍".to_string()) { return; }
+                let mut member = guild.member(&ctx, &reaction.user_id).expect("Member not found");
+                member.add_role(&ctx, 704500053519368383).expect("Role addition failed");
+            }
+            
         }
         println!("Reaction {} was added to message {} by user {}", reaction.emoji, reaction.message_id, reaction.user_id);
     }
