@@ -1,5 +1,5 @@
 extern crate redis;
-use redits::Commands;
+use redis::Commands;
 use serenity::model::id::GuildId;
 
 mod botdb {
@@ -8,7 +8,7 @@ mod botdb {
         guild_id: u64,
         message_id: u64, // ID of the message users react to
         role_id: u64 // The ID of the role given
-    };
+    }
 
     // Connect to the Redis DB
     pub fn db_init(address: String) -> redis::RedisResult<Connection> {
