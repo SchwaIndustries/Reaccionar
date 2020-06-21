@@ -160,6 +160,6 @@ fn diss_status(ctx: Context) {
         &ctx.set_activity(Activity::playing("unlike Reaction Roles!"));
         thread::sleep(Duration::from_secs(30));
 
-        reqwest::blocking::get("https://reaccionar.herokuapp.com").expect("keep alive failed");
+        reqwest::blocking::get(&env::var("DOMAIN").expect("Domain to ping not found")).expect("keep alive failed");
     }
 }
