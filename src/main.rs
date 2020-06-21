@@ -27,7 +27,7 @@ struct General;
 
 use dotenv::dotenv;
 use std::env;
-// use botdb;
+// mod botdb;
 
 struct Handler;
 
@@ -42,14 +42,21 @@ impl EventHandler for Handler {
 
     fn reaction_add(&self, ctx: Context, reaction: Reaction) {
         if let Some(guild) = reaction.guild_id {
+            // if let guild_info = botdb::get_guild(guild) {
+            //     if reaction.message_id == guild_info.message_id && reaction.emoji == ReactionType::Unicode(guild_info.emoji) {
+            //         let mut member = guild.member(&ctx, &reaction.user_id).expect("Member not found");
+            //         member.add_role(&ctx, guild_info.role_id).expect("Role addition failed");
+            //         println!("Reaction {} was added to message {} by user {}", reaction.emoji, reaction.message_id, reaction.user_id);
+            //     }
+            // }
             if guild == 667553378607431681 && reaction.message_id == 712566183257440266 { 
-                if reaction.emoji != ReactionType::Unicode("✅".to_string()) { return; }
+                if reaction.emoji != ReactionType::Unicode('\u{2705}'.to_string()) { return; }
                 let mut member = guild.member(&ctx, &reaction.user_id).expect("Member not found");
                 member.add_role(&ctx, 687460972960415771).expect("Role addition failed");
                 println!("Reaction {} was added to message {} by user {}", reaction.emoji, reaction.message_id, reaction.user_id);
             }
             if guild == 704495983542796338 && reaction.message_id == 709842698575675416 { 
-                if reaction.emoji != ReactionType::Unicode("👍".to_string()) { return; }
+                if reaction.emoji != ReactionType::Unicode('\u{1F44D}'.to_string()) { return; }
                 let mut member = guild.member(&ctx, &reaction.user_id).expect("Member not found");
                 member.add_role(&ctx, 704500053519368383).expect("Role addition failed");
                 println!("Reaction {} was added to message {} by user {}", reaction.emoji, reaction.message_id, reaction.user_id);
@@ -156,9 +163,9 @@ fn untrack_message(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandR
 fn diss_status(ctx: Context) {
     loop {
         &ctx.set_activity(Activity::playing("todo el tiempo!"));
-        thread::sleep(Duration::from_secs(30));
+        thread::sleep(Duration::from_secs(60));
         &ctx.set_activity(Activity::playing("unlike Reaction Roles!"));
-        thread::sleep(Duration::from_secs(30));
+        thread::sleep(Duration::from_secs(60));
 
         reqwest::blocking::get(&env::var("DOMAIN").expect("Domain to ping not found")).expect("keep alive failed");
     }
