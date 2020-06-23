@@ -12,3 +12,4 @@ dotenv = "0.15.0"
 redis = "*"
 rocket = "0.4.5"
 reqwest = { version = "0.10", features = [] }
+openssl = { version = "0.10.29", features = ["vendored"] }
